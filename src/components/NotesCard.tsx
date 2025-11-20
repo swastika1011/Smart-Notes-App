@@ -47,7 +47,7 @@ const NotesCard = ({ post }: { post: NotesTypeCard }) => {
   </div>
 )}
 
-          <Link href={`/startup/${_id}`}>
+          <Link href={`/notespage/${_id}`}>
             <h3 className="text-26-semibold line-clamp-1">{title}</h3>
           </Link>
         </div>
@@ -63,7 +63,7 @@ const NotesCard = ({ post }: { post: NotesTypeCard }) => {
         </Link>
       </div>
 
-      <Link href={`/startup/${_id}`}>
+      <Link href={`/notespage/${_id}`}>
         <p className="startup-card_desc">{description}</p>
 
         <img src={image} alt="placeholder" className="startup-card_img" />

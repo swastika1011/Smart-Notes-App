@@ -54,7 +54,7 @@ export const createPitch = async (
       category,
       image: link,
       slug: {
-        _type: slug,
+        _type: "slug",
         current: slug,
       },
       author: {
@@ -72,18 +72,32 @@ export const createPitch = async (
     };
 
     const result = await writeClient.create({ _type: "notes", ...notes });
+        // 3️⃣ Trigger AI review (asynchronous call)
+    const pdfUrl = uploadedFile.url || uploadedFile._url || "";
+    if (pdfUrl) {
+      fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/review`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          noteId: result._id,
+          pdf_url: pdfUrl,
+          description,
+        }),
+      }).catch((err) => console.error("AI review trigger failed:", err));
+    }
 
     return parseServerActionResponse({
       ...result,
+       pdfUrl: uploadedFile.url,  
       error: "",
       status: "SUCCESS",
     });
   } catch (error) {
-    console.log(error);
-
+    console.error("CreatePitch error:", error);
     return parseServerActionResponse({
       error: JSON.stringify(error),
       status: "ERROR",
     });
+
   }
 };

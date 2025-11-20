@@ -52,9 +52,26 @@ export const notes = defineType({
                 ].join(", "),
             },
             validation: (Rule) => Rule.required().error("Please upload a file"),
-
-
         }),
+        defineField({
+            name: "status",
+            title: "Status",
+            type: "string",
+            options: {
+                list: [
+                    { title: "Pending", value: "pending" },
+                    { title: "Approved", value: "approved" },
+                    { title: "Rejected", value: "rejected" },
+                ],
+            },
+            initialValue: "pending",
+        }),
+        defineField({
+            name: "aiReason",
+            title: "AI Review Reason",
+            type: "text",
+        }),
+
 
     ],
 });
