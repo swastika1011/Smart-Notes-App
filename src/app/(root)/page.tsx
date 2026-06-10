@@ -1,12 +1,7 @@
-
 import SearchForm from "@/components/SearchForm";
 import React from "react";
-import { NOTES_QUERY } from "@/sanity/lib/queries";
-// import { NOTES_QUERYResult } from "@/sanity/types";
-import NotesCard, {NotesTypeCard} from "@/components/NotesCard";
-import { sanityFetch, SanityLive } from "@/sanity/lib/live";
-import {auth} from "@/auth";
-// type NotesTypeCard = NOTES_QUERYResult[number];
+import NotesCard, { NotesTypeCard } from "@/components/NotesCard";
+import { getNotes } from "@/lib/mock-data";
 
 async function Home({
   searchParams,
@@ -14,13 +9,7 @@ async function Home({
   searchParams: Promise<{ query?: string }>;
 }) {
   const query = (await searchParams).query;
-  const params = {search: query || null};
-  const session = await auth();
-  // console.log(session?.id);
-
-  const {data: posts} = await sanityFetch( { query: NOTES_QUERY, params });
-  // console.log(JSON.stringify(posts));
-
+  const posts = getNotes(query || null);
 
   return (
     <>
@@ -33,23 +22,21 @@ async function Home({
         </p>
         <SearchForm query={query} />
       </section>
-            <section className="section_container">
+      <section className="section_container">
         <p className="text-30-semibold">
           {query ? `Search results for "${query}"` : " All Notes"}
         </p>
 
         <ul className="mt-7 card_grid">
-          {posts?.length > 0 ? (
+          {posts.length > 0 ? (
             posts.map((post: NotesTypeCard) => (
-              <NotesCard key={post?._id} post={post} />
+              <NotesCard key={post._id} post={post} />
             ))
           ) : (
-            <p className="no-results">No relevent notes found</p>
+            <p className="no-results">No relevant notes found</p>
           )}
         </ul>
       </section>
-      <SanityLive />
-
     </>
   );
 }

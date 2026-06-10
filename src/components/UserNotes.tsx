@@ -1,10 +1,9 @@
 import React from "react";
-import { client } from "@/sanity/lib/client";
-import { NOTES_BY_AUTHOR_QUERY } from "@/sanity/lib/queries";
-import NotesCard, {NotesTypeCard} from "./NotesCard";
+import NotesCard, { NotesTypeCard } from "./NotesCard";
+import { getNotesByAuthor } from "@/lib/mock-data";
 
 const UserNotes = async ({ id }: { id: string }) => {
-  const resources = await client.fetch(NOTES_BY_AUTHOR_QUERY, { id });
+  const resources = getNotesByAuthor(id);
 
   return (
     <>
@@ -18,4 +17,5 @@ const UserNotes = async ({ id }: { id: string }) => {
     </>
   );
 };
+
 export default UserNotes;

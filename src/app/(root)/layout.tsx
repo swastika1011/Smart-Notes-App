@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "../globals.css"
 // import "easymde/dist/easymde.min.css";
-import { Toaster, toast } from "sonner"
+import { Toaster } from "sonner"
 
 
 
