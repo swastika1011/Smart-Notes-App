@@ -1,15 +1,23 @@
-import React from 'react'
-import SubmissionForm  from "@/components/SubmissionForm"
+import React from "react";
+import { redirect } from "next/navigation";
+import SubmissionForm from "@/components/SubmissionForm";
+import { getCurrentUser } from "@/lib/auth";
 
-const page = () => {
+const Page = async () => {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   return (
     <>
-     <section className="pink_container !min-h-[230px]">
+      <section className="pink_container !min-h-[230px]">
         <h1 className="heading">Submit Your Notes</h1>
       </section>
-      <SubmissionForm/>
+      <SubmissionForm />
     </>
-  )
-}
+  );
+};
 
-export default page
+export default Page;
