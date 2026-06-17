@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useActionState, useState } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -8,76 +8,112 @@ import { Send } from "lucide-react";
 import { formSchema } from "@/lib/validation";
 import { z } from "zod";
 import { toast, Toaster } from "sonner";
-import { createPitch, type ActionState } from "@/lib/actions";
 
 const SubmissionForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isPending, setIsPending] = useState(false);
+  const [formValues, setFormValues] = useState({
+    title: "",
+    description: "",
+    category: "",
+    country: "",
+    universityName: "",
+  });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
-  const handleFormSubmit = async (
-    prevState: ActionState,
-    formData: FormData,
-  ): Promise<ActionState> => {
+  function handleChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    const { name, value } = event.target;
+
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[name];
+      return next;
+    });
+  }
+
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     try {
-      const formValues = {
-        title: formData.get("title") as string,
-        description: formData.get("description") as string,
-        category: formData.get("category") as string,
-        link: formData.get("link") as string,
-        country: formData.get("country") as string,
-        universityName: formData.get("universityName") as string,
-      };
+      setIsPending(true);
 
       await formSchema.parseAsync(formValues);
-
-      if (!formData.get("pdfFile")) {
-        toast.error("Please upload a PDF file");
-        setErrors((prev) => ({ ...prev, pdfFile: "PDF file is required" }));
-        return { ...prevState, status: "ERROR" };
+      if (!imageFile) {
+        toast.error("Please upload an image");
+        return;
       }
 
-      const result = await createPitch(prevState, formData);
+      if (!pdfFile) {
+        toast.error("Please upload a PDF file");
+        setErrors((prev) => ({ ...prev, pdfFile: "PDF file is required" }));
+        return;
+      }
 
-      if (result.status === "ERROR") {
-        toast.error(result.error);
-        return result;
+      const formData = new FormData();
+      formData.append("title", formValues.title);
+      formData.append("description", formValues.description);
+      formData.append("category", formValues.category);
+      formData.append("image", imageFile);
+      formData.append("country", formValues.country);
+      formData.append("universityName", formValues.universityName);
+      formData.append("pdfFile", pdfFile);
+
+      const response = await fetch("/api/notes", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.message || "Failed to upload notes");
+        return;
       }
 
       toast.success("Your notes were submitted successfully");
-      return { ...prevState, status: "SUCCESS" };
+      setFormValues({
+        title: "",
+        description: "",
+        category: "",
+        country: "",
+        universityName: "",
+      });
+      setPdfFile(null);
+      setImageFile(null);
+      setErrors({});
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
-        setErrors(
-          Object.fromEntries(
+        setErrors((prev) => ({
+          ...prev,
+          ...Object.fromEntries(
             Object.entries(fieldErrors).map(([key, value]) => [
               key,
               value?.[0] ?? "",
             ]),
           ),
-        );
+        }));
         toast.error("Validation failed. Please check your inputs.");
-        return { ...prevState, error: "Validation failed", status: "ERROR" };
+        return;
       }
 
       toast.error("An unexpected error has occurred.");
-      return { ...prevState, error: "Unknown error", status: "ERROR" };
+    } finally {
+      setIsPending(false);
     }
   };
-
-  const initialState: ActionState = {
-    error: "",
-    status: "INITIAL",
-  };
-
-  const [, formAction, isPending] = useActionState(
-    handleFormSubmit,
-    initialState,
-  );
 
   return (
     <>
       <Toaster richColors closeButton position="top-right" />
-      <form action={formAction} className="startup-form">
+      <form onSubmit={handleFormSubmit} className="startup-form">
         <div>
           <label htmlFor="title" className="startup-form_label">
             Title
@@ -88,10 +124,10 @@ const SubmissionForm = () => {
             className="startup-form_input"
             required
             placeholder="Notes Title"
+            value={formValues.title}
+            onChange={handleChange}
           />
-          {errors.title && (
-            <p className="startup-form_error">{errors.title}</p>
-          )}
+          {errors.title && <p className="startup-form_error">{errors.title}</p>}
         </div>
 
         <div>
@@ -104,6 +140,8 @@ const SubmissionForm = () => {
             className="startup-form_textarea"
             required
             placeholder="Notes Description"
+            value={formValues.description}
+            onChange={handleChange}
           />
           {errors.description && (
             <p className="startup-form_error">{errors.description}</p>
@@ -120,25 +158,40 @@ const SubmissionForm = () => {
             className="startup-form_input"
             required
             placeholder="Notes Category (Tech, Health, Education...)"
+            value={formValues.category}
+            onChange={handleChange}
           />
           {errors.category && (
             <p className="startup-form_error">{errors.category}</p>
           )}
         </div>
 
-        <div>
-          <label htmlFor="link" className="startup-form_label">
-            Image URL
-          </label>
-          <Input
-            id="link"
-            name="link"
-            className="startup-form_input"
-            required
-            placeholder="Notes Image URL"
-          />
-          {errors.link && <p className="startup-form_error">{errors.link}</p>}
-        </div>
+<div>
+  <label htmlFor="image" className="startup-form_label">
+    Upload Image
+  </label>
+
+  <Input
+    id="image"
+    name="image"
+    type="file"
+    accept="image/*"
+    required
+    onChange={(event) => {
+      setImageFile(event.target.files?.[0] || null);
+
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.image;
+        return next;
+      });
+    }}
+  />
+
+  {errors.image && (
+    <p className="startup-form_error">{errors.image}</p>
+  )}
+</div>
 
         <div>
           <label htmlFor="country" className="startup-form_label">
@@ -150,6 +203,8 @@ const SubmissionForm = () => {
             className="startup-form_input"
             required
             placeholder="Your Country"
+            value={formValues.country}
+            onChange={handleChange}
           />
           {errors.country && (
             <p className="startup-form_error">{errors.country}</p>
@@ -166,6 +221,8 @@ const SubmissionForm = () => {
             className="startup-form_input"
             required
             placeholder="Your University Name"
+            value={formValues.universityName}
+            onChange={handleChange}
           />
           {errors.universityName && (
             <p className="startup-form_error">{errors.universityName}</p>
@@ -176,7 +233,21 @@ const SubmissionForm = () => {
           <label htmlFor="pdfFile" className="startup-form_label">
             Upload PDF
           </label>
-          <Input id="pdfFile" name="pdfFile" type="file" accept=".pdf" required />
+          <Input
+            id="pdfFile"
+            name="pdfFile"
+            type="file"
+            accept=".pdf"
+            required
+            onChange={(event) => {
+              setPdfFile(event.target.files?.[0] || null);
+              setErrors((prev) => {
+                const next = { ...prev };
+                delete next.pdfFile;
+                return next;
+              });
+            }}
+          />
           {errors.pdfFile && (
             <p className="startup-form_error">{errors.pdfFile}</p>
           )}

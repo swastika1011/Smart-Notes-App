@@ -1,8 +1,8 @@
 import Ping from "@/components/Ping";
-import { getNoteById } from "@/lib/mock-data";
+import { getNoteViews } from "@/lib/notes-data";
 
 const View = async ({ id }: { id: string }) => {
-  const totalViews = getNoteById(id)?.views ?? 0;
+  const totalViews = await getNoteViews(id);
 
   return (
     <div className="view-container">

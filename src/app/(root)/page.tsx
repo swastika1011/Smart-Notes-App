@@ -1,7 +1,8 @@
 import SearchForm from "@/components/SearchForm";
 import React from "react";
 import NotesCard, { NotesTypeCard } from "@/components/NotesCard";
-import { getNotes } from "@/lib/mock-data";
+import { getNotes } from "@/lib/notes-data";
+import { getCurrentUser } from "@/lib/auth";
 
 async function Home({
   searchParams,
@@ -9,7 +10,12 @@ async function Home({
   searchParams: Promise<{ query?: string }>;
 }) {
   const query = (await searchParams).query;
-  const posts = getNotes(query || null);
+  const currentUser = await getCurrentUser();
+  const currentUserId =
+    currentUser && typeof currentUser === "object" && "userId" in currentUser
+      ? String(currentUser.userId)
+      : undefined;
+  const posts = await getNotes(query || null);
 
   return (
     <>
@@ -30,7 +36,11 @@ async function Home({
         <ul className="mt-7 card_grid">
           {posts.length > 0 ? (
             posts.map((post: NotesTypeCard) => (
-              <NotesCard key={post._id} post={post} />
+              <NotesCard
+                key={post._id}
+                post={post}
+                currentUserId={currentUserId}
+              />
             ))
           ) : (
             <p className="no-results">No relevant notes found</p>

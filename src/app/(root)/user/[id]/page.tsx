@@ -35,7 +35,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
 
           <Image
-            src={user.image || "/avatar.png"}
+            src={user.image || "/window.svg"}
             alt={user.name}
             width={220}
             height={220}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BadgePlus, LogIn } from "lucide-react";
+import { BadgePlus, LogIn, UserPlus } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
 import LogoutButton from "@/components/LogoutButton";
 
@@ -24,10 +24,16 @@ const Navigation = async () => {
               <LogoutButton />
             </>
           ) : (
-            <Link href="/login" className="flex items-center gap-2">
-              <span className="max-sm:hidden">Login</span>
-              <LogIn className="size-6 sm:hidden" />
-            </Link>
+            <>
+              <Link href="/login" className="flex items-center gap-2">
+                <span className="max-sm:hidden">Login</span>
+                <LogIn className="size-6 sm:hidden" />
+              </Link>
+              <Link href="/register" className="flex items-center gap-2">
+                <span className="max-sm:hidden">Register</span>
+                <UserPlus className="size-6 sm:hidden" />
+              </Link>
+            </>
           )}
         </div>
       </nav>

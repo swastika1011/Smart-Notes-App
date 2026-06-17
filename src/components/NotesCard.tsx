@@ -5,10 +5,17 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Note } from "@/lib/mock-data";
+import DeleteNoteButton from "@/components/DeleteNoteButton";
 
 export type NotesTypeCard = Note;
 
-const NotesCard = ({ post }: { post: NotesTypeCard }) => {
+const NotesCard = ({
+  post,
+  currentUserId,
+}: {
+  post: NotesTypeCard;
+  currentUserId?: string;
+}) => {
   const {
     _createdAt,
     views,
@@ -27,6 +34,7 @@ const NotesCard = ({ post }: { post: NotesTypeCard }) => {
         <div className="flex gap-1.5">
           <EyeIcon className="size-6 text-primary" />
           <span className="text-16-medium">{views}</span>
+          {currentUserId === author._id && <DeleteNoteButton noteId={_id} />}
         </div>
       </div>
 
@@ -51,7 +59,7 @@ const NotesCard = ({ post }: { post: NotesTypeCard }) => {
         </div>
         <Link href={`/user/${author._id}`}>
           <Image
-            src={author.image}
+            src={author.image || "/window.svg"}
             alt={author.name}
             width={48}
             height={48}

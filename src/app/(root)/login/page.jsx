@@ -35,6 +35,7 @@ export default function LoginPage() {
 
     if (res.ok) {
       router.push(`/user/${data.userId}`);
+      router.refresh();
     } else {
       setMessage(data.message || "Login failed");
     }

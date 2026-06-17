@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import View from "@/components/View";
-import { getNoteById } from "@/lib/mock-data";
+import { getNoteById } from "@/lib/notes-data";
 
 export default async function NotesPage({
   params,
@@ -14,7 +14,7 @@ export default async function NotesPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const post = getNoteById(id);
+  const post = await getNoteById(id);
 
   if (!post) return notFound();
 
@@ -39,7 +39,7 @@ export default async function NotesPage({
               className="flex gap-2 items-center mb-3"
             >
               <Image
-                src={post.author.image}
+                src={post.author.image || "/window.svg"}
                 alt="avatar"
                 width={64}
                 height={64}

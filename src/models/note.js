@@ -9,6 +9,13 @@ const noteSchema = new mongoose.Schema(
       ref: "user",
       required: true,
     },
+    cloudinaryId: {
+  type: String,
+},
+
+imageCloudinaryId: {
+  type: String,
+},
     views: { type: Number, default: 0 },
     description: { type: String, required: true },
     category: { type: String, required: true, minlength: 1, maxlength: 20 },
@@ -16,10 +23,19 @@ const noteSchema = new mongoose.Schema(
     fileUrl: { type: String, required: true },
     fileName: String,
     fileType: String,
+    extractedText: String,
+    reviewStatus: {
+      type: String,
+      enum: ["approved", "rejected", "pending"],
+      default: "pending",
+    },
+    reviewReason: String,
+    reviewIssues: [String],
     likes: [{
         type: mongoose.Schema.Types.ObjectId, ref: "user"
     }]
   },
+  
   { timestamps: true },
 );
 
