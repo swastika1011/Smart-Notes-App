@@ -3,19 +3,33 @@ export type Author = {
   name: string;
   username: string;
   image: string;
+  email?: string;
   bio?: string;
   country?: string;
+  university?: string;
   universityName?: string;
+  github?: string;
+  linkedin?: string;
 };
 
 export type Note = {
   _id: string;
   _createdAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   title: string;
   description: string;
   category: string;
   image: string;
   views: number;
+  status?: "approved" | "rejected" | "processing_failed";
+  reviewReason?: string;
+  reviewedAt?: string;
+  submittedAt?: string;
+  lastEditedAt?: string;
+  extractedText?: string;
+  likes?: string[];
+  likeCount?: number;
   author: Author;
   file?: {
     asset?: {

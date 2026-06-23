@@ -4,22 +4,38 @@ import { User } from "@/models/user";
 import cloudinary from "@/lib/cloudinary/cloudinary";
 
 function serializeNote(note) {
+  const status = note.status || note.reviewStatus || "processing_failed";
+
   return {
     _id: note._id.toString(),
     _createdAt: note.createdAt?.toISOString() || new Date().toISOString(),
+    createdAt: note.createdAt?.toISOString() || new Date().toISOString(),
+    updatedAt: note.updatedAt?.toISOString() || "",
     title: note.title,
     description: note.description,
     category: note.category,
     image: note.image,
     views: note.views || 0,
+    status,
+    reviewReason: note.reviewReason || "",
+    reviewedAt: note.reviewedAt?.toISOString() || "",
+    submittedAt: note.submittedAt?.toISOString() || "",
+    lastEditedAt: note.lastEditedAt?.toISOString() || "",
+    extractedText: note.extractedText || "",
+    likeCount: note.likeCount || note.likes?.length || 0,
+    likes: (note.likes || []).map((like) => like.toString()),
     author: {
       _id: note.author?._id?.toString() || "",
       name: note.author?.name || "Unknown User",
       username: note.author?.username || "unknown",
-      image: note.author?.image || "/window.svg",
+      image: note.author?.profileImage || note.author?.image || "/window.svg",
       bio: note.author?.bio || "",
       country: note.author?.country || "",
-      universityName: note.author?.universityName || "",
+      university: note.author?.university || note.author?.universityName || "",
+      universityName: note.author?.universityName || note.author?.university || "",
+      github: note.author?.github || "",
+      linkedin: note.author?.linkedin || "",
+      email: note.author?.email || "",
     },
     file: {
       asset: {
@@ -32,15 +48,26 @@ function serializeNote(note) {
 export async function getNotes(search) {
   await connectDB();
 
+  const approvedFilter = {
+    $or: [
+      { status: "approved" },
+      { status: { $exists: false }, reviewStatus: "approved" },
+    ],
+  };
   const query = search
     ? {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { description: { $regex: search, $options: "i" } },
-          { category: { $regex: search, $options: "i" } },
+        $and: [
+          approvedFilter,
+          {
+            $or: [
+              { title: { $regex: search, $options: "i" } },
+              { description: { $regex: search, $options: "i" } },
+              { category: { $regex: search, $options: "i" } },
+            ],
+          },
         ],
       }
-    : {};
+    : approvedFilter;
 
   const notes = await Note.find(query)
     .populate("author")
@@ -58,6 +85,17 @@ export async function getNoteById(id) {
 }
 
 export async function getNotesByAuthor(authorId) {
+  await connectDB();
+
+  const notes = await Note.find({ author: authorId })
+    .populate("author")
+    .sort({ createdAt: -1 })
+    .lean();
+
+  return notes.map(serializeNote);
+}
+
+export async function getNotesByOwner(authorId) {
   await connectDB();
 
   const notes = await Note.find({ author: authorId })

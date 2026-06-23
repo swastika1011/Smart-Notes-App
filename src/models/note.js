@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+export const NOTE_STATUSES = [
+  "approved",
+  "rejected",
+  "processing_failed",
+];
+
 const noteSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
@@ -24,16 +30,23 @@ imageCloudinaryId: {
     fileName: String,
     fileType: String,
     extractedText: String,
-    reviewStatus: {
+    status: {
       type: String,
-      enum: ["approved", "rejected", "pending"],
-      default: "pending",
+      enum: NOTE_STATUSES,
+      default: "processing_failed",
     },
     reviewReason: String,
     reviewIssues: [String],
-    likes: [{
-        type: mongoose.Schema.Types.ObjectId, ref: "user"
-    }]
+    reviewedAt: Date,
+    submittedAt: Date,
+    lastEditedAt: Date,
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
+    likeCount: { type: Number, default: 0 },
   },
   
   { timestamps: true },

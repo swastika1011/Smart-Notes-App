@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "avatars.githubusercontent.com", // ✅ Added GitHub avatars
       },
+       {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
     ],
   },
   // experimental: {

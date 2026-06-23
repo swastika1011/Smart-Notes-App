@@ -9,7 +9,12 @@ const userSchema = new mongoose.Schema(
     image: String,
     bio: String,
     country: String,
+    university: String,
     universityName: String,
+    profileImage: String,
+    profileImageCloudinaryId: String,
+    github: String,
+    linkedin: String,
     posts: [{type: mongoose.Schema.Types.ObjectId, ref:"note"}]
   },
   { timestamps: true },

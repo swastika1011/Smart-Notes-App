@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,8 @@ const SubmissionForm = () => {
     country: "",
     universityName: "",
   });
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
@@ -77,7 +79,13 @@ const SubmissionForm = () => {
         return;
       }
 
-      toast.success("Your notes were submitted successfully");
+      toast.success(
+        data.status === "approved"
+          ? "Your notes were approved"
+          : data.status === "rejected"
+            ? "Your notes were rejected"
+            : "Your notes were submitted, but processing failed",
+      );
       setFormValues({
         title: "",
         description: "",
@@ -87,6 +95,13 @@ const SubmissionForm = () => {
       });
       setPdfFile(null);
       setImageFile(null);
+      if (imageInputRef.current) {
+        imageInputRef.current.value = "";
+      }
+
+      if (pdfInputRef.current) {
+        pdfInputRef.current.value = "";
+      }
       setErrors({});
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -166,32 +181,31 @@ const SubmissionForm = () => {
           )}
         </div>
 
-<div>
-  <label htmlFor="image" className="startup-form_label">
-    Upload Image
-  </label>
+        <div>
+          <label htmlFor="image" className="startup-form_label">
+            Upload Image
+          </label>
 
-  <Input
-    id="image"
-    name="image"
-    type="file"
-    accept="image/*"
-    required
-    onChange={(event) => {
-      setImageFile(event.target.files?.[0] || null);
+          <Input
+            ref={imageInputRef}
+            id="image"
+            name="image"
+            type="file"
+            accept="image/*"
+            required
+            onChange={(event) => {
+              setImageFile(event.target.files?.[0] || null);
 
-      setErrors((prev) => {
-        const next = { ...prev };
-        delete next.image;
-        return next;
-      });
-    }}
-  />
+              setErrors((prev) => {
+                const next = { ...prev };
+                delete next.image;
+                return next;
+              });
+            }}
+          />
 
-  {errors.image && (
-    <p className="startup-form_error">{errors.image}</p>
-  )}
-</div>
+          {errors.image && <p className="startup-form_error">{errors.image}</p>}
+        </div>
 
         <div>
           <label htmlFor="country" className="startup-form_label">
@@ -234,6 +248,7 @@ const SubmissionForm = () => {
             Upload PDF
           </label>
           <Input
+            ref={pdfInputRef}
             id="pdfFile"
             name="pdfFile"
             type="file"

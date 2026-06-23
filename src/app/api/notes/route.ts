@@ -3,10 +3,12 @@ import { connectDB } from "@/lib/mongodb";
 import { getCurrentUser } from "@/lib/auth";
 import { Note } from "@/models/note";
 import { User } from "@/models/user";
-import { reviewDocumentText } from "@/lib/ai/reviewDocument";
 import { uploadImage } from "@/lib/cloudinary/uploadImage";
 import { uploadPdf } from "@/lib/cloudinary/uploadPdf";
-import { extractTextWithDocling } from "@/lib/pdf/extractTextWithDocling";
+import { reviewNotePdf } from "@/lib/notes/reviewNote";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 function slugify(value: string) {
   return value
@@ -63,22 +65,11 @@ const pdfFile = formData.get("pdfFile") as File | null;
   );
 }
 
-    const extractedText = await extractTextWithDocling(pdfFile);
-    const review = await reviewDocumentText({
+    const review = await reviewNotePdf({
       title,
       description,
-      extractedText,
+      pdfFile,
     });
-
-    if (review.status !== "approved") {
-      return NextResponse.json(
-        {
-          message: review.reason || "The PDF did not pass document review",
-          review,
-        },
-        { status: 422 },
-      );
-    }
 
    const pdfResult = await uploadPdf(pdfFile);
     const imageResult = await uploadImage(imageFile as File);
@@ -93,10 +84,12 @@ const pdfFile = formData.get("pdfFile") as File | null;
       fileUrl: pdfResult.secure_url,
       fileName: pdfFile.name,
       fileType: pdfFile.type,
-      extractedText,
-      reviewStatus: review.status,
-      reviewReason: review.reason,
-      reviewIssues: review.issues,
+      extractedText: review.extractedText,
+      status: review.status,
+      reviewReason: review.reviewReason,
+      reviewIssues: review.reviewIssues,
+      reviewedAt: review.reviewedAt,
+      submittedAt: new Date(),
       cloudinaryId: pdfResult.public_id,
       imageCloudinaryId: imageResult.public_id,
     });
@@ -107,7 +100,9 @@ const pdfFile = formData.get("pdfFile") as File | null;
         ? {
             $set: {
               ...(country ? { country } : {}),
-              ...(universityName ? { universityName } : {}),
+              ...(universityName
+                ? { university: universityName, universityName }
+                : {}),
             },
           }
         : {}),
@@ -115,8 +110,9 @@ const pdfFile = formData.get("pdfFile") as File | null;
 
     return NextResponse.json(
       {
-        message: "Note uploaded successfully",
+        message: "Note submitted and reviewed successfully",
         noteId: note._id,
+        status: note.status,
       },
       { status: 201 },
     );
@@ -124,20 +120,8 @@ const pdfFile = formData.get("pdfFile") as File | null;
     console.error("CREATE NOTE ERROR:", error);
     const message = error instanceof Error ? error.message : "";
 
-    if (
-      message.includes("Docling") ||
-      message.includes("OPENROUTER_API_KEY") ||
-      message.includes("OPENAI_API_KEY") ||
-      message.includes("AI review")
-    ) {
-      return NextResponse.json(
-        { message },
-        { status: 503 },
-      );
-    }
-
     return NextResponse.json(
-      { message: "Something went wrong while uploading notes" },
+      { message: message || "Something went wrong while uploading notes" },
       { status: 500 },
     );
   }

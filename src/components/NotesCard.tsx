@@ -9,6 +9,12 @@ import DeleteNoteButton from "@/components/DeleteNoteButton";
 
 export type NotesTypeCard = Note;
 
+const statusClasses: Record<string, string> = {
+  approved: "bg-green-100 text-green-900 border-green-600",
+  rejected: "bg-red-100 text-red-900 border-red-600",
+  processing_failed: "bg-zinc-100 text-zinc-800 border-zinc-500",
+};
+
 const NotesCard = ({
   post,
   currentUserId,
@@ -25,7 +31,9 @@ const NotesCard = ({
     _id,
     image,
     description,
+    status,
   } = post;
+  const isOwner = currentUserId === author._id;
 
   return (
     <li className="startup-card group">
@@ -34,7 +42,7 @@ const NotesCard = ({
         <div className="flex gap-1.5">
           <EyeIcon className="size-6 text-primary" />
           <span className="text-16-medium">{views}</span>
-          {currentUserId === author._id && <DeleteNoteButton noteId={_id} />}
+          {isOwner && <DeleteNoteButton noteId={_id} />}
         </div>
       </div>
 
@@ -77,6 +85,13 @@ const NotesCard = ({
         <Link href={`/?query=${category.toLowerCase()}`}>
           <p className="text-16-medium">{category}</p>
         </Link>
+        {isOwner && status && (
+          <span
+            className={`rounded-full border px-3 py-1 text-xs font-bold capitalize ${statusClasses[status]}`}
+          >
+            {status.replace(/_/g, " ")}
+          </span>
+        )}
         <Button className="startup-card_btn" asChild>
           <Link href={`/notespage/${_id}`}>Details</Link>
         </Button>

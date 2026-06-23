@@ -10,7 +10,13 @@ type ProfileUser = {
   name: string;
   username: string;
   image?: string;
+  profileImage?: string;
   bio?: string;
+  country?: string;
+  university?: string;
+  universityName?: string;
+  github?: string;
+  linkedin?: string;
 };
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
@@ -35,7 +41,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
 
           <Image
-            src={user.image || "/window.svg"}
+            src={user.profileImage || user.image || "/window.svg"}
             alt={user.name}
             width={220}
             height={220}
@@ -49,6 +55,37 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
           <p className="mt-1 text-center text-14-normal">
             {user.bio || "No bio yet"}
           </p>
+
+          {(user.university || user.universityName || user.country) && (
+            <p className="mt-4 text-center text-sm text-white-100-alpha">
+              {[user.university || user.universityName, user.country]
+                .filter(Boolean)
+                .join(" - ")}
+            </p>
+          )}
+
+          <div className="mt-4 flex gap-4">
+            {user.github && (
+              <a
+                href={user.github}
+                target="_blank"
+                rel="noreferrer"
+                className="text-white underline"
+              >
+                GitHub
+              </a>
+            )}
+            {user.linkedin && (
+              <a
+                href={user.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="text-white underline"
+              >
+                LinkedIn
+              </a>
+            )}
+          </div>
         </div>
 
         <div className="flex-1 flex flex-col gap-5 lg:-mt-5">

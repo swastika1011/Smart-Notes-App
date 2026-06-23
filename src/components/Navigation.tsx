@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BadgePlus, LogIn, UserPlus } from "lucide-react";
+import { BadgePlus, LogIn, User, UserPlus } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
 import LogoutButton from "@/components/LogoutButton";
 
@@ -20,6 +20,10 @@ const Navigation = async () => {
               <Link href="/notespage/create">
                 <span className="max-sm:hidden">Create</span>
                 <BadgePlus className="size-6 sm:hidden" />
+              </Link>
+              <Link href="/profile" className="flex items-center gap-2">
+                <span className="max-sm:hidden">Profile</span>
+                <User className="size-6 sm:hidden" />
               </Link>
               <LogoutButton />
             </>
