@@ -1,11 +1,9 @@
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 export const experimental_ppr = true;
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { Toaster } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import LikeButton from "@/components/LikeButton";
 import View from "@/components/View";

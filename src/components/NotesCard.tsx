@@ -77,7 +77,7 @@ const NotesCard = ({
       <Link href={`/notespage/${_id}`}>
         <p className="startup-card_desc">{description}</p>
         <div className="relative overflow-hidden rounded-2xl">
-          <img
+          <Image
             src={image}
             alt={title}
             className="startup-card_img transition-transform duration-300 group-hover:scale-[1.03]"
