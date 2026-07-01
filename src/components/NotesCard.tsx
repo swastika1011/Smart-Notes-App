@@ -80,6 +80,7 @@ const NotesCard = ({
           <Image
             src={image}
             alt={title}
+            fill
             className="startup-card_img transition-transform duration-300 group-hover:scale-[1.03]"
           />
         </div>
