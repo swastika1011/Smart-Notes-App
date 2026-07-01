@@ -44,17 +44,12 @@ export default function DeleteAccountSection() {
   }
 
   return (
-    <section className="mt-12 rounded-lg border-[4px] border-red-600 bg-red-50 p-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-24-black text-red-800">Danger Zone</h2>
-          <p className="mt-1 text-sm text-red-700">
-            Delete your profile, notes, uploads, and likes permanently.
-          </p>
-        </div>
+    <section className="mt-5 rounded-lg p-5 ">
+      <div className="flex justify-center">
+       
         <Button
           type="button"
-          className="bg-red-700 text-white hover:bg-red-800"
+          className="bg-red-800 text-white hover:bg-red-900"
           onClick={() => setIsOpen(true)}
           disabled={isDeleting}
         >

@@ -15,9 +15,14 @@ export default function RootLayout({
 }>) {
   return (
     <>
+      <body >
+      <div >
       <Navigation />
       {children}
       <Toaster />
+      </div>
+      </body>
+      
     </>
   );
 }

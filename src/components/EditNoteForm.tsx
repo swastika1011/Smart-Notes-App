@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast, Toaster } from "sonner";
-import { Send } from "lucide-react";
+import { FileImage, FileText, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -90,6 +90,22 @@ export default function EditNoteForm({ note }: { note: EditableNote }) {
     <>
       <Toaster richColors closeButton position="top-right" />
       <form onSubmit={handleSubmit} className="startup-form">
+        <div className="rounded-3xl border border-blue-100 bg-blue-50/70 p-5">
+          <div className="flex items-start gap-3">
+            <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-white text-blue-700 shadow-sm">
+              <Sparkles className="size-5" />
+            </span>
+            <div>
+              <h2 className="font-heading text-2xl font-semibold text-[#0A1F44]">
+                Resubmit for review
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Updates keep the same note record and send the latest content back through SmartNotes review.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div>
           <label htmlFor="title" className="startup-form_label">
             Title
@@ -126,26 +142,44 @@ export default function EditNoteForm({ note }: { note: EditableNote }) {
           <label htmlFor="image" className="startup-form_label">
             Replace Image
           </label>
-          <Input
-            id="image"
-            name="image"
-            type="file"
-            accept="image/*"
-            onChange={(event) => setImageFile(event.target.files?.[0] || null)}
-          />
+          <div className="mt-3 rounded-3xl border border-dashed border-blue-200 bg-white/70 p-5 transition-all duration-200 hover:border-blue-300 hover:bg-white">
+            <div className="mb-4 flex items-center gap-3 text-sm text-slate-600">
+              <span className="grid size-10 place-items-center rounded-2xl bg-blue-50 text-blue-700">
+                <FileImage className="size-5" />
+              </span>
+              <span>{imageFile ? imageFile.name : "Optional replacement thumbnail"}</span>
+            </div>
+            <Input
+              id="image"
+              name="image"
+              type="file"
+              accept="image/*"
+              className="startup-form_input !mt-0 file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:text-blue-700"
+              onChange={(event) => setImageFile(event.target.files?.[0] || null)}
+            />
+          </div>
         </div>
 
         <div>
           <label htmlFor="pdfFile" className="startup-form_label">
             Replace PDF
           </label>
-          <Input
-            id="pdfFile"
-            name="pdfFile"
-            type="file"
-            accept=".pdf"
-            onChange={(event) => setPdfFile(event.target.files?.[0] || null)}
-          />
+          <div className="mt-3 rounded-3xl border border-dashed border-blue-200 bg-white/70 p-5 transition-all duration-200 hover:border-blue-300 hover:bg-white">
+            <div className="mb-4 flex items-center gap-3 text-sm text-slate-600">
+              <span className="grid size-10 place-items-center rounded-2xl bg-blue-50 text-blue-700">
+                <FileText className="size-5" />
+              </span>
+              <span>{pdfFile ? pdfFile.name : "Optional replacement PDF"}</span>
+            </div>
+            <Input
+              id="pdfFile"
+              name="pdfFile"
+              type="file"
+              accept=".pdf"
+              className="startup-form_input !mt-0 file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:text-blue-700"
+              onChange={(event) => setPdfFile(event.target.files?.[0] || null)}
+            />
+          </div>
         </div>
 
         <Button
@@ -154,7 +188,7 @@ export default function EditNoteForm({ note }: { note: EditableNote }) {
           disabled={isPending}
         >
           {isPending ? "Resubmitting..." : "Update & Resubmit"}
-          <Send className="size-6 ml-2" />
+          <Send className="ml-2 size-5" />
         </Button>
       </form>
     </>

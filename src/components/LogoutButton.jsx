@@ -19,10 +19,29 @@ export default function LogoutButton() {
     <button
       type="button"
       onClick={handleLogout}
-      className="flex items-center gap-2"
+      className="
+        inline-flex
+        items-center
+        gap-2
+        px-4
+        py-2
+        rounded-xl
+        text-sm
+        font-medium
+        text-slate-700
+        transition-all
+        duration-200
+        hover:-translate-y-0.5
+        hover:bg-white/70
+        hover:text-[#0A1F44]
+        font-body
+      "
     >
-      <span className="max-sm:hidden">Logout</span>
-      <LogOut className="size-6 sm:hidden" />
+      <LogOut className="size-5" />
+
+      <span className="">
+        Logout
+      </span>
     </button>
   );
 }

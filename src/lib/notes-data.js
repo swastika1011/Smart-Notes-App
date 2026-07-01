@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import { Note } from "@/models/note";
 import { User } from "@/models/user";
+import { NoteView } from "@/models/NoteView";
 import cloudinary from "@/lib/cloudinary/cloudinary";
 
 function serializeNote(note) {
@@ -84,10 +85,20 @@ export async function getNoteById(id) {
   return note ? serializeNote(note) : null;
 }
 
-export async function getNotesByAuthor(authorId) {
+export async function getNotesByAuthor(
+  authorId,
+  isOwner
+) {
   await connectDB();
 
-  const notes = await Note.find({ author: authorId })
+  const filter = isOwner
+    ? { author: authorId }
+    : {
+        author: authorId,
+        status: "approved",
+      };
+
+  const notes = await Note.find(filter)
     .populate("author")
     .sort({ createdAt: -1 })
     .lean();
@@ -149,4 +160,50 @@ export async function deleteNoteById(notesId, userId) {
   await User.findByIdAndUpdate(userId, { $pull: { posts: notesId } });
 
   return { ok: true, status: 200, message: "Note deleted successfully" };
+}
+
+
+
+export async function incrementNoteViews(
+  noteId,
+  userId
+) {
+  await connectDB();
+
+  // Guests: don't increase views
+  if (!userId) {
+    const note = await Note.findById(noteId).select("views").lean();
+    return note?.views ?? 0;
+  }
+
+  // Check if this user has viewed the note in the last 24 hours
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  const alreadyViewed = await NoteView.findOne({
+    noteId,
+    userId,
+    createdAt: { $gte: yesterday },
+  });
+
+  if (alreadyViewed) {
+    const note = await Note.findById(noteId).select("views").lean();
+    return note?.views ?? 0;
+  }
+
+  // Record the view
+  await NoteView.create({
+    noteId,
+    userId,
+  });
+
+  // Increment total views
+  const note = await Note.findByIdAndUpdate(
+    noteId,
+    { $inc: { views: 1 } },
+    { new: true }
+  )
+    .select("views")
+    .lean();
+
+  return note?.views ?? 0;
 }

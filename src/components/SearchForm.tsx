@@ -5,7 +5,7 @@ import { Search } from 'lucide-react';
 
 const SearchForm = ({query}: {query?: string} )  => {
   return (
-    <Form action={"/"} scroll={false} className='search-form'>
+    <Form action={"/"} scroll={false} className='search-form font-body'>
     <input 
     name = "query"
     defaultValue={""}
@@ -14,8 +14,10 @@ const SearchForm = ({query}: {query?: string} )  => {
     />
     <div className='flex gap-2'>
         {query && <SearchFormReset/>}
-        <button type='submit' className='search-btn text-white' >
-           <Search className="size-5" />
+        <button type='submit' className='search-btn text-white  hover:-translate-y-0.5
+    transition-all
+    duration-200' >
+           <Search className="size-4" />
         </button>
 
 

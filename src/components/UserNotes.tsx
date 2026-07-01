@@ -9,8 +9,9 @@ const UserNotes = async ({ id }: { id: string }) => {
     currentUser && typeof currentUser === "object" && "userId" in currentUser
       ? String(currentUser.userId)
       : undefined;
-  const resources = await getNotesByAuthor(id);
+const isOwner = currentUserId === id;
 
+const resources = await getNotesByAuthor(id, isOwner);
   return (
     <>
       {resources.length > 0 ? (

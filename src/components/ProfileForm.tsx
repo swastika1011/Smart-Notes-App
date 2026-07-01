@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { toast, Toaster } from "sonner";
-import { Camera, Save } from "lucide-react";
+import { Camera, Github, Linkedin, MapPin, Save, School } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -86,58 +86,68 @@ export default function ProfileForm({ user }: { user: ProfileUser }) {
   return (
     <>
       <Toaster richColors closeButton position="top-right" />
-      <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-        <section className="border-[4px] border-black rounded-lg p-5 h-fit bg-white shadow-[2px_2px_0_0_rgba(0,0,0,0.25)]">
-          <div className="flex flex-col items-center text-center gap-4">
-            <Image
-              src={preview}
-              alt={user.name}
-              width={140}
-              height={140}
-              className="size-36 rounded-full object-cover border-[3px] border-black"
-            />
-            <div>
-              <h2 className="text-24-black">{user.name}</h2>
-              <p className="text-sm text-zinc-600 break-all">{user.email}</p>
+      <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
+        <section className="h-fit rounded-3xl border border-white/70 bg-white/80 p-6 shadow-xl shadow-blue-950/10 backdrop-blur-md">
+          <div className="flex flex-col items-center gap-5 text-center">
+            <div className="relative">
+              <Image
+                src={preview}
+                alt={user.name}
+                width={144}
+                height={144}
+                className="size-36 rounded-full border-4 border-white object-cover shadow-lg shadow-blue-950/15 ring-1 ring-blue-100"
+              />
+              <span className="absolute bottom-2 right-2 grid size-10 place-items-center rounded-full bg-[#0A1F44] text-white shadow-md">
+                <Camera className="size-4" />
+              </span>
             </div>
-            <div className="w-full text-left space-y-2 text-sm">
-              <p>
-                <span className="font-bold">University:</span>{" "}
-                {values.university || "Not added"}
+            <div>
+              <h2 className="font-heading text-2xl font-semibold text-[#0A1F44]">
+                {user.name}
+              </h2>
+              <p className="mt-1 break-all text-sm text-slate-500">{user.email}</p>
+            </div>
+            <div className="w-full space-y-3 rounded-2xl border border-blue-50 bg-blue-50/50 p-4 text-left text-sm text-slate-600">
+              <p className="flex gap-2">
+                <School className="mt-0.5 size-4 shrink-0 text-blue-600" />
+                <span>{values.university || "University not added"}</span>
               </p>
-              <p>
-                <span className="font-bold">Country:</span>{" "}
-                {values.country || "Not added"}
+              <p className="flex gap-2">
+                <MapPin className="mt-0.5 size-4 shrink-0 text-blue-600" />
+                <span>{values.country || "Country not added"}</span>
               </p>
-              <p className="break-words">
-                <span className="font-bold">Bio:</span>{" "}
+              <p className="break-words leading-6">
                 {values.bio || "No bio yet"}
               </p>
-              {values.github && (
-                <a
-                  href={values.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block font-semibold underline"
-                >
-                  GitHub
-                </a>
-              )}
-              {values.linkedin && (
-                <a
-                  href={values.linkedin}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block font-semibold underline"
-                >
-                  LinkedIn
-                </a>
-              )}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {values.github && (
+                  <a
+                    href={values.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 font-semibold text-[#0A1F44] transition hover:-translate-y-0.5"
+                  >
+                    <Github className="size-4" />
+                    GitHub
+                  </a>
+                )}
+                {values.linkedin && (
+                  <a
+                    href={values.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 font-semibold text-[#0A1F44] transition hover:-translate-y-0.5"
+                  >
+                    <Linkedin className="size-4" />
+                    LinkedIn
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </section>
 
-        <form onSubmit={handleSubmit} className="startup-form !my-0 !mx-0">
+        <form onSubmit={handleSubmit} className="startup-form !my-0 !mx-0 !max-w-none">
           <div>
             <label htmlFor="profileImage" className="startup-form_label">
               Avatar
@@ -147,6 +157,7 @@ export default function ProfileForm({ user }: { user: ProfileUser }) {
               name="profileImage"
               type="file"
               accept="image/*"
+              className="startup-form_input file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:text-blue-700"
               onChange={(event) => {
                 const file = event.target.files?.[0] || null;
                 setImageFile(file);
@@ -236,9 +247,9 @@ export default function ProfileForm({ user }: { user: ProfileUser }) {
           >
             {isPending ? "Saving..." : "Save Profile"}
             {isPending ? (
-              <Save className="size-5 ml-2 animate-pulse" />
-            ) : (
-              <Camera className="size-5 ml-2" />
+            <Save className="ml-2 size-5 animate-pulse" />
+          ) : (
+              <Camera className="ml-2 size-5" />
             )}
           </Button>
         </form>

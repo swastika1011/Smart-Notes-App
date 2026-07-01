@@ -1,29 +1,28 @@
 @import "tailwindcss";
 
-/* :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --bg-1: #f8fbff;
+  --bg-2: #e0f2fe;
+  --bg-3: #dbeafe;
+  --bg-4: #c7d2fe;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} */
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(56,189,248,.18), transparent 30%),
+    radial-gradient(circle at 90% 15%, rgba(139,92,246,.16), transparent 28%),
+    radial-gradient(circle at 70% 90%, rgba(96,165,250,.14), transparent 35%),
+    linear-gradient(
+      135deg,
+      var(--bg-1) 0%,
+      var(--bg-2) 30%,
+      var(--bg-3) 65%,
+      var(--bg-4) 100%
+    );
+
+  background-attachment: fixed;
+}
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);
@@ -34,12 +33,12 @@ body {
 
 :root {
   --font-work-sans: "Work Sans", sans-serif;
-  --primary: oklch(0.208 0.042 265.755);
+  --primary: #0A1F44;
   --secondary: oklch(0.968 0.007 247.896);
   --text-black-100: #333333;
-  --shadow-100: 2px 2px 0px 0px rgba(0, 0, 0, 0.2);
-  --shadow-200: 2px 2px 0px 2px rgba(0, 0, 0, 0.4);
-  --shadow-300: 2px 2px 0px 2px rgba(0, 0, 0, 0.6);
+  --shadow-100: 0 16px 40px rgba(10, 31, 68, 0.08);
+  --shadow-200: 0 20px 45px rgba(10, 31, 68, 0.1);
+  --shadow-300: 0 24px 60px rgba(10, 31, 68, 0.14);
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
@@ -111,6 +110,18 @@ body {
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
+html,
+body {
+  font-family: var(--font-sora);
+}
+
+.font-body {
+  font-family: var(--font-sora);
+}
+
+.font-heading {
+  font-family: var(--font-fraunces);
+}
 
 @layer theme {
   :root {
@@ -128,7 +139,8 @@ body {
   }
 
   .text-30-bold {
-    @apply text-[30px] font-bold text-black;
+    @apply text-[30px] font-bold text-[#0A1F44];
+    font-family: var(--font-fraunces);
   }
 
   .text-30-semibold {
@@ -136,7 +148,8 @@ body {
   }
 
   .text-26-semibold {
-    @apply font-semibold text-[26px] text-black;
+    @apply font-semibold text-[26px] text-[#0A1F44];
+    font-family: var(--font-fraunces);
   }
 
   .text-24-black {
@@ -157,46 +170,24 @@ body {
   }
 
   .pink_container {
-    @apply w-full flex justify-center items-center flex-col py-10 px-6 min-h-[530px];
-    background-color: var(--primary);
-    background-image: linear-gradient(
-      to right,
-      transparent 49.5%,
-      rgba(251, 232, 67, 0.2) 49.5%,
-      rgba(251, 232, 67, 0.6) 50.5%,
-      transparent 50.5%
-    );
-    background-size: 5% 100%;
-    background-position: center;
-    background-repeat: repeat-x;
+    @apply w-full flex justify-center items-center flex-col py-12 px-6 min-h-[420px] text-center;
   }
 
   .tag {
-    @apply px-6 py-3 font-bold rounded-sm uppercase relative;
-    background-color: var(--secondary);
-    --font-family-work-sans: var(--font-work-sans);
-    &::before {
-      content: "";
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      border-top: 10px solid black;
-      border-right: 10px solid transparent;
-    }
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      border-bottom: 10px solid black;
-      border-left: 10px solid transparent;
-    }
+    @apply rounded-full border border-blue-100 bg-white/75 px-5 py-2 text-sm font-semibold uppercase tracking-normal text-blue-700 shadow-sm backdrop-blur-md;
   }
+  .font-heading {
+  font-family: var(--font-fraunces);
+}
+
+.font-body {
+  font-family: var(--font-sora);
+}
 
   .heading {
-    @apply  text-center uppercase bg-black px-6 py-3;
-    font-family: var(--font-family-work-sans);
-    @apply  font-extrabold text-white sm:text-[54px] sm:leading-[64px] text-[36px] leading-[46px] max-w-5xl my-5;
+    @apply text-center px-2 py-3 font-bold text-[#0A1F44] sm:text-[54px] sm:leading-[64px] text-[36px] leading-[46px] max-w-5xl my-5;
+    font-family: var(--font-fraunces);
+    margin-top: -32px;
   }
 
   .text-white-100-alpha {
@@ -204,15 +195,15 @@ body {
   }
 
   .sub-heading {
-    @apply font-medium text-[20px] text-white max-w-2xl text-center break-words;
+    @apply font-normal text-[18px] text-slate-600 max-w-2xl text-center break-words leading-8;
   }
 
   .section_container {
-    @apply px-6 py-10 max-w-7xl mx-auto;
+    @apply px-4 py-10 max-w-7xl mx-auto sm:px-6 lg:px-8;
   }
 
   .card_grid {
-    @apply grid md:grid-cols-3 sm:grid-cols-2 gap-5;
+    @apply grid gap-5 sm:grid-cols-2 xl:grid-cols-3;
   }
 
   .card_grid-sm {
@@ -269,87 +260,137 @@ body {
   }
 
   /* searchform */
-  .search-form {
-    @apply max-w-3xl w-full min-h-[80px] bg-white border-[5px] border-black rounded-[80px] text-[24px] mt-8 px-5 flex flex-row items-center gap-5;
-  }
+.search-form {
+  @apply
+  w-full
+  h-16
+  bg-white/80
+  backdrop-blur-sm
+  border-2
+  border-slate-300
+  rounded-2xl
+  mt-8
+  px-4
+  flex
+  items-center
+  gap-3;
 
-  .search-input {
-    @apply flex-1 font-bold placeholder:font-semibold w-full h-auto outline-none;
-    color: var(--black-100);
-    &::placeholder {
-      color: var(--black-300);
-      font-weight: 600;
-    }
-  }
+  transition: all 0.25s ease;
+}
 
-  .search-btn {
-    @apply size-[50px] rounded-full bg-black flex justify-center items-center;
+.search-form:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.search-input {
+  @apply flex-1
+  font-normal
+  text-base
+  w-full
+  outline-none
+  bg-transparent;
+
+  color: var(--black-100);
+
+  &::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
   }
+}
+
+.search-btn {
+  @apply size-10
+  rounded-xl
+  bg-[#0A1F44]
+  flex
+  justify-center
+  items-center
+  transition-all
+  duration-200;
+}
+.search-btn:hover {
+  transform: translateY(-1px);
+}
 
   /* startupcard */
   .startup-card {
-    @apply bg-white border-[5px] border-black py-6 px-5 rounded-[22px] transition-all duration-500;
+    @apply  bg-white  border border-white/70 py-6 px-5 rounded-3xl transition-all duration-300 backdrop-blur-md;
     box-shadow: var(--shadow-200);
     &:hover {
-             @apply bg-blue-100 border-blue-100;
-
-      /* background-color: var(--primary); */
-      border-color: var(--primary);
+      @apply -translate-y-1 bg-blue-50/80;
+      border-color: rgba(47, 86, 131, 0.55);
       box-shadow: var(--shadow-300);
     }
   }
 
   .startup-card_date {
-    @apply font-medium text-[16px] px-4 py-2 rounded-full;
-    background-color: var(--primary);
-    &:hover {
-      background-color: var(--secondary);
-    }
+    @apply font-medium text-[13px] px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100;
   }
 
   .startup-card_desc {
-    @apply font-normal text-[16px] line-clamp-2 my-3 break-all;
-    color: var(--black-100);
+    @apply font-normal text-[15px] leading-7 line-clamp-2 my-4 break-words text-slate-600;
   }
 
   .startup-card_img {
-    @apply w-full h-[164px] rounded-[10px] object-cover;
+    @apply w-full h-[180px] rounded-2xl object-cover border border-blue-50 bg-blue-50;
   }
 
   .startup-card_btn {
-    @apply rounded-full font-medium text-[16px] text-white px-5 py-3;
-    background-color: black;
+    @apply rounded-full font-medium text-[15px] text-white px-5 py-3 bg-[#0A1F44] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#12366f] hover:shadow-lg hover:shadow-blue-950/15;
   }
 
   .startup-card_skeleton {
-    @apply w-full h-96 rounded-[22px] bg-zinc-400;
+    @apply w-full h-96 rounded-3xl bg-white/70;
   }
 
   /* startupform */
-  .startup-form {
-    @apply max-w-2xl mx-auto bg-white my-10 space-y-8 px-6;
-  }
+.startup-form {
+  @apply max-w-3xl
+         mx-auto
+         mb-20
+         sm:mt-8
+         sm:mb-10
+         space-y-7
+         rounded-3xl
+         border
+         border-white/70
+         bg-white/80
+         p-5
+         shadow-xl
+         shadow-blue-950/10
+         backdrop-blur-md
+         sm:p-8;
+}
 
   .startup-form_label {
-    @apply font-bold text-[18px] text-black uppercase;
+    @apply text-sm font-semibold text-[#0A1F44];
   }
 
   .startup-form_input {
-    @apply border-[3px] border-black px-5 py-7 text-[18px] text-black font-semibold rounded-full mt-3;
+    @apply mt-3 h-13 rounded-2xl border border-slate-200 bg-white/85 px-4 text-[15px] font-medium text-slate-900 shadow-sm transition-all duration-200;
     &::placeholder {
-      color: var(--black-300);
+      color: #94a3b8;
+    }
+    &:focus-visible {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.16);
     }
   }
 
   .startup-form_textarea {
-    @apply border-[3px] border-black p-5 text-[18px] text-black font-semibold rounded-[20px] mt-3;
+    @apply mt-3 min-h-36 rounded-2xl border border-slate-200 bg-white/85 p-4 text-[15px] font-medium text-slate-900 shadow-sm transition-all duration-200;
     &::placeholder {
-      color: var(--black-300);
+      color: #94a3b8;
+    }
+    &:focus-visible {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.16);
     }
   }
 
   .startup-form_error {
-    @apply text-red-500 mt-2 ml-5;
+    @apply text-sm font-medium text-rose-600 mt-2;
   }
 
   .startup-form_editor {
@@ -360,8 +401,7 @@ body {
   }
 
   .startup-form_btn {
-    @apply border-[4px] border-black rounded-full p-5 min-h-[70px] w-full font-bold text-[18px];
-    background-color: var(--primary);
+    @apply min-h-13 w-full rounded-2xl border-0 bg-[#0A1F44] p-4 text-[16px] font-semibold text-white shadow-lg shadow-blue-950/15 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#12366f] hover:shadow-xl hover:shadow-blue-950/20;
   }
 
   /* view */
@@ -375,8 +415,7 @@ body {
   }
 
   .category-tag {
-    @apply font-medium text-[16px] px-4 py-2 rounded-full;
-    background-color: white;
+    @apply font-medium text-[15px] px-4 py-2 rounded-full border border-blue-100 bg-white/80 text-blue-700;
   }
 
   .pattern {
@@ -440,6 +479,6 @@ body {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
   }
 }

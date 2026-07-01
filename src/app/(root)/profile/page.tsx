@@ -43,8 +43,11 @@ export default async function ProfilePage() {
   return (
     <section className="section_container">
       <div className="mb-8">
+        <p className="text-sm font-semibold text-blue-700">Account settings</p>
         <h1 className="text-30-bold">Profile</h1>
-        <p className="mt-2 text-zinc-600">Update your public profile details.</p>
+        <p className="mt-2 max-w-2xl text-slate-600">
+          Update your public profile details and manage your uploaded notes.
+        </p>
       </div>
 
       <ProfileForm user={profileUser} />

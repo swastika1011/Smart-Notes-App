@@ -9,14 +9,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import LikeButton from "@/components/LikeButton";
 import View from "@/components/View";
+import StatusBadge from "@/components/StatusBadge";
 import { getNoteById } from "@/lib/notes-data";
 import { getCurrentUser } from "@/lib/auth";
-
-const statusClasses: Record<string, string> = {
-  approved: "bg-green-100 text-green-900 border-green-600",
-  rejected: "bg-red-100 text-red-900 border-red-600",
-  processing_failed: "bg-zinc-100 text-zinc-800 border-zinc-500",
-};
+import { incrementNoteViews } from "@/lib/notes-data";
 
 export default async function NotesPage({
   params,
@@ -24,12 +20,17 @@ export default async function NotesPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [post, currentUser] = await Promise.all([
-    getNoteById(id),
-    getCurrentUser(),
-  ]);
+const [post, currentUser] = await Promise.all([
+  getNoteById(id),
+  getCurrentUser(),
+]);
 
-  if (!post) return notFound();
+if (!post) return notFound();
+
+const views = await incrementNoteViews(
+  id,
+  currentUser?.userId
+);
 
   const currentUserId = currentUser?.userId ? String(currentUser.userId) : "";
   const isOwner = currentUserId === post.author._id;
@@ -44,17 +45,17 @@ export default async function NotesPage({
     <>
       <Toaster richColors closeButton position="top-right" />
       <section className="pink_container !min-h-[230px]">
-        <p className="tag">{formatDate(post._createdAt)}</p>
+        <p className="tag -translate-y-10">{formatDate(post._createdAt)}</p>
         <h1 className="heading">{post.title}</h1>
         <p className="sub-heading !max-w-5xl">{post.description}</p>
       </section>
 
       <section className="section_container">
-        <img
-          src={post.image}
-          alt="thumbnail"
-          className="w-full max-h-[460px] object-cover rounded-xl border-[4px] border-black"
-        />
+  <img
+    src={post.image}
+    alt="thumbnail"
+    className="mx-auto w-full max-w-5xl h-[250px] sm:h-[320px] lg:h-[400px] rounded-3xl border border-white/70 object-cover shadow-xl shadow-blue-950/10"
+  />
         <div className="space-y-5 mt-10 max-w-4xl mx-auto">
           <div className="flex-between gap-5 max-md:flex-col max-md:items-start">
             <Link
@@ -64,13 +65,13 @@ export default async function NotesPage({
               <Image
                 src={post.author.image || "/window.svg"}
                 alt="avatar"
-                width={64}
-                height={64}
+                width={40}
+                height={40}
                 className="rounded-full drop-shadow-lg"
               />
               <div>
-                <p className="text-20-medium">{post.author.name}</p>
-                <p className="text-16-medium !text-black-300">
+                <p className="text-20-medium !text-[#0A1F44]">{post.author.name}</p>
+                <p className="text-16-medium !text-blue-500">
                   @{post.author.username}
                 </p>
               </div>
@@ -90,11 +91,7 @@ export default async function NotesPage({
               Created {formatDate(post._createdAt)}
             </p>
             {isOwner && (
-              <span
-                className={`inline-flex rounded-full border px-3 py-1 text-sm font-bold capitalize ${statusClasses[status]}`}
-              >
-                {status.replace(/_/g, " ")}
-              </span>
+              <StatusBadge status={status} className="text-sm" />
             )}
           </div>
 
@@ -106,7 +103,7 @@ export default async function NotesPage({
           </div>
 
           {isOwner && isRejected && (
-            <div className="rounded-lg border-[3px] border-red-600 bg-red-50 p-4">
+            <div className="rounded-3xl border border-rose-200 bg-rose-50 p-5">
               <p className="font-bold text-red-800">Review reason</p>
               <p className="mt-1 text-red-700">
                 {post.reviewReason || "No reason provided."}
@@ -146,15 +143,13 @@ export default async function NotesPage({
               <iframe
                 src={pdfViewUrl}
                 title={`${post.title} PDF`}
-                className="h-[720px] w-full rounded-lg border-[4px] border-black bg-white"
+                className="h-[720px] w-full rounded-3xl border border-white/70 bg-white shadow-xl shadow-blue-950/10"
               />
             </div>
           )}
         </div>
 
-        <Suspense fallback={<Skeleton className="view_skeleton" />}>
-          <View id={id} />
-        </Suspense>
+      <View totalViews={views} />
       </section>
     </>
   );

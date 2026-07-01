@@ -1,9 +1,5 @@
 import Ping from "@/components/Ping";
-import { getNoteViews } from "@/lib/notes-data";
-
-const View = async ({ id }: { id: string }) => {
-  const totalViews = await getNoteViews(id);
-
+const View = ({ totalViews }: { totalViews: number }) => {
   return (
     <div className="view-container">
       <div className="absolute -top-2 -right-2">
@@ -11,7 +7,7 @@ const View = async ({ id }: { id: string }) => {
       </div>
 
       <p className="view-text">
-        <span className="font-white">Views: {totalViews}</span>
+        Views: {totalViews}
       </p>
     </div>
   );

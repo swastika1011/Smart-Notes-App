@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
+import { FileImage, FileText, Send, Sparkles } from "lucide-react";
 import { formSchema } from "@/lib/validation";
 import { z } from "zod";
 import { toast, Toaster } from "sonner";
@@ -128,7 +128,24 @@ const SubmissionForm = () => {
   return (
     <>
       <Toaster richColors closeButton position="top-right" />
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-6 lg:px-8 -mt-15">
       <form onSubmit={handleFormSubmit} className="startup-form">
+        <div className="rounded-3xl p-5">
+          <div className="flex items-start gap-3">
+            <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-white text-blue-700 shadow-sm">
+              <Sparkles className="size-5" />
+            </span>
+            <div>
+              <h2 className="font-heading text-2xl font-semibold text-[#0A1F44]">
+                AI review before publishing
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                SmartNotes checks the uploaded PDF for relevance and quality before the note is shared.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div>
           <label htmlFor="title" className="startup-form_label">
             Title
@@ -181,88 +198,107 @@ const SubmissionForm = () => {
           )}
         </div>
 
+        <div className="grid gap-5 md:grid-cols-2">
+          <div>
+            <label htmlFor="country" className="startup-form_label">
+              Country
+            </label>
+            <Input
+              id="country"
+              name="country"
+              className="startup-form_input"
+              required
+              placeholder="Your Country"
+              value={formValues.country}
+              onChange={handleChange}
+            />
+            {errors.country && (
+              <p className="startup-form_error">{errors.country}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="universityName" className="startup-form_label">
+              University Name
+            </label>
+            <Input
+              id="universityName"
+              name="universityName"
+              className="startup-form_input"
+              required
+              placeholder="Your University Name"
+              value={formValues.universityName}
+              onChange={handleChange}
+            />
+            {errors.universityName && (
+              <p className="startup-form_error">{errors.universityName}</p>
+            )}
+          </div>
+        </div>
+
         <div>
           <label htmlFor="image" className="startup-form_label">
             Upload Image
           </label>
+          <div className="mt-3 rounded-3xl border border-dashed border-blue-200 bg-white/70 p-5 transition-all duration-200 hover:border-blue-300 hover:bg-white">
+            <div className="mb-4 flex items-center gap-3 text-sm text-slate-600">
+              <span className="grid size-10 place-items-center rounded-2xl bg-blue-50 text-blue-700">
+                <FileImage className="size-5" />
+              </span>
+              <span>{imageFile ? imageFile.name : "Add a clear thumbnail image"}</span>
+            </div>
+            <Input
+              ref={imageInputRef}
+              id="image"
+              name="image"
+              type="file"
+              accept="image/*"
+              required
+              className="startup-form_input !mt-0 file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:text-blue-700"
+              onChange={(event) => {
+                setImageFile(event.target.files?.[0] || null);
 
-          <Input
-            ref={imageInputRef}
-            id="image"
-            name="image"
-            type="file"
-            accept="image/*"
-            required
-            onChange={(event) => {
-              setImageFile(event.target.files?.[0] || null);
-
-              setErrors((prev) => {
-                const next = { ...prev };
-                delete next.image;
-                return next;
-              });
-            }}
-          />
+                setErrors((prev) => {
+                  const next = { ...prev };
+                  delete next.image;
+                  return next;
+                });
+              }}
+            />
+          </div>
 
           {errors.image && <p className="startup-form_error">{errors.image}</p>}
-        </div>
-
-        <div>
-          <label htmlFor="country" className="startup-form_label">
-            Country
-          </label>
-          <Input
-            id="country"
-            name="country"
-            className="startup-form_input"
-            required
-            placeholder="Your Country"
-            value={formValues.country}
-            onChange={handleChange}
-          />
-          {errors.country && (
-            <p className="startup-form_error">{errors.country}</p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="universityName" className="startup-form_label">
-            University Name
-          </label>
-          <Input
-            id="universityName"
-            name="universityName"
-            className="startup-form_input"
-            required
-            placeholder="Your University Name"
-            value={formValues.universityName}
-            onChange={handleChange}
-          />
-          {errors.universityName && (
-            <p className="startup-form_error">{errors.universityName}</p>
-          )}
         </div>
 
         <div data-color-mode="light">
           <label htmlFor="pdfFile" className="startup-form_label">
             Upload PDF
           </label>
-          <Input
-            ref={pdfInputRef}
-            id="pdfFile"
-            name="pdfFile"
-            type="file"
-            accept=".pdf"
-            required
-            onChange={(event) => {
-              setPdfFile(event.target.files?.[0] || null);
-              setErrors((prev) => {
-                const next = { ...prev };
-                delete next.pdfFile;
-                return next;
-              });
-            }}
-          />
+          <div className="mt-3 rounded-3xl border border-dashed border-blue-200 bg-white/70 p-5 transition-all duration-200 hover:border-blue-300 hover:bg-white">
+            <div className="mb-4 flex items-center gap-3 text-sm text-slate-600">
+              <span className="grid size-10 place-items-center rounded-2xl bg-blue-50 text-blue-700">
+                <FileText className="size-5" />
+              </span>
+              <span>{pdfFile ? pdfFile.name : "Upload the study material as a PDF"}</span>
+            </div>
+            <Input
+              ref={pdfInputRef}
+              id="pdfFile"
+              name="pdfFile"
+              type="file"
+              accept=".pdf"
+              required
+              className="startup-form_input !mt-0 file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:text-blue-700"
+              onChange={(event) => {
+                setPdfFile(event.target.files?.[0] || null);
+                setErrors((prev) => {
+                  const next = { ...prev };
+                  delete next.pdfFile;
+                  return next;
+                });
+              }}
+            />
+          </div>
           {errors.pdfFile && (
             <p className="startup-form_error">{errors.pdfFile}</p>
           )}
@@ -274,9 +310,10 @@ const SubmissionForm = () => {
           disabled={isPending}
         >
           {isPending ? "Submitting..." : "Submit Your Notes"}
-          <Send className="size-6 ml-2" />
+          <Send className="ml-2 size-5" />
         </Button>
       </form>
+      </div>
     </>
   );
 };

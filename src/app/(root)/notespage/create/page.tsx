@@ -12,7 +12,7 @@ const Page = async () => {
 
   return (
     <>
-      <section className="pink_container !min-h-[230px]">
+      <section className="pink_container !min-h-[230px] !py-2 ">
         <h1 className="heading">Submit Your Notes</h1>
       </section>
       <SubmissionForm />
