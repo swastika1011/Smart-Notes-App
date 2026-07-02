@@ -191,19 +191,22 @@ export async function incrementNoteViews(
   }
 
   // Record the view
-  await NoteView.create({
-    noteId,
-    userId,
-  });
 
-  // Increment total views
-  const note = await Note.findByIdAndUpdate(
-    noteId,
-    { $inc: { views: 1 } },
-    { new: true }
-  )
-    .select("views")
-    .lean();
 
-  return note?.views ?? 0;
+// Record the view
+await NoteView.create({
+  noteId,
+  userId,
+});
+
+// Increment total views
+const note = await Note.findByIdAndUpdate(
+  noteId,
+  { $inc: { views: 1 } },
+  { new: true }
+)
+  .select("views")
+  .lean();
+
+return note?.views ?? 0;
 }

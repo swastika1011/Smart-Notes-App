@@ -55,7 +55,7 @@ export async function reviewDocumentText(params: {
 }) {
   const client = getClient();
   const documentText = params.extractedText.slice(0, 45_000);
-
+   console.log("Using model:", MODEL);
   const response = await client.chat.completions.create({
     model: MODEL,
     temperature: 0,

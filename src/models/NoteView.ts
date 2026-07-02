@@ -16,7 +16,7 @@ const noteViewSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-noteViewSchema.index({ noteId: 1, userId: 1 }, { unique: true });
+noteViewSchema.index({ noteId: 1, userId: 1 });
 
 export const NoteView =
   mongoose.models.noteview || mongoose.model("noteview", noteViewSchema);
