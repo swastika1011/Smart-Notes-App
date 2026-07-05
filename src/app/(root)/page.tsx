@@ -19,13 +19,11 @@ async function Home({
 
   return (
     <>
-      <section className="min-h-screen overflow-hidden">
-        <div className="mx-auto max-w-7xl px-6">
+<section className="min-h-[75vh] overflow-hidden">
+            <div className="mx-auto max-w-7xl px-6">
           <div className="grid min-h-[80vh] grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
             <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-              <div className="mb-6 inline-flex items-center rounded-full bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
-                AI-powered study platform
-              </div>
+
 
               <h1 className="font-heading text-4xl font-bold leading-[1.05] text-[#0A1F44] sm:text-5xl lg:text-6xl">
                 Share Knowledge.
@@ -58,8 +56,7 @@ async function Home({
             </div>
 
             <div className="font-body mb-10 flex justify-center md:mb-0">
-              <div className="mx-auto flex h-[420px] w-full max-w-[380px] flex-col justify-between rounded-3xl border border-white/50 bg-white/70 p-8 shadow-xl shadow-blue-950/10 backdrop-blur-md">
-                <div>
+            <div className="mx-auto flex w-full max-w-[380px] flex-col rounded-3xl border border-white/50 bg-white/70 p-8 lg:min-h-[420px] shadow-xl shadow-blue-950/10 backdrop-blur-md">                <div>
                   <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
                     AI Powered
                   </span>
@@ -74,7 +71,7 @@ async function Home({
                   </p>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-3 lg:mt-5 lg:space-y-5">
                   {[
                     "Topic Match Verification",
                     "Content Quality Check",
@@ -87,20 +84,7 @@ async function Home({
                   ))}
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 border-t border-slate-200 pt-4">
-                  <div>
-                    <p className="text-2xl font-bold text-[#0A1F44]">12K+</p>
-                    <p className="text-xs text-slate-500">Notes</p>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-[#0A1F44]">500+</p>
-                    <p className="text-xs text-slate-500">Students</p>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-[#0A1F44]">4.9</p>
-                    <p className="text-xs text-slate-500">Rating</p>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
