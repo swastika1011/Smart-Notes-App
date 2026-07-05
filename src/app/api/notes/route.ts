@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
 
     await connectDB();
-     const formData = await req.formData();
+    const formData = await req.formData();
  
    
 const title = formData.get("title") as string;
@@ -43,66 +43,64 @@ const country = formData.get("country") as string;
 const universityName = formData.get("universityName") as string;
 const pdfFile = formData.get("pdfFile") as File | null;
 
-    if (!(pdfFile instanceof File) || pdfFile.type !== "application/pdf") {
-      const MAX_PDF_SIZE = 10 * 1024 * 1024;
+if (!title || !description || !category || !imageFile || !pdfFile) {
+  return NextResponse.json(
+    { message: "Missing required fields" },
+    { status: 400 },
+  );
+}
+
+if (!(pdfFile instanceof File) || pdfFile.type !== "application/pdf") {
+  return NextResponse.json(
+    { message: "Please upload a valid PDF file" },
+    { status: 400 },
+  );
+}
+
+const MAX_PDF_SIZE = 10 * 1024 * 1024;
 
 if (pdfFile.size > MAX_PDF_SIZE) {
   return NextResponse.json(
-    {
-      message: "PDF size must be 10 MB or smaller.",
-    },
-    { status: 400 }
+    { message: "PDF size must be 10 MB or smaller." },
+    { status: 400 },
   );
 }
-      return NextResponse.json(
-        { message: "Please upload a valid PDF file" },
-        { status: 400 },
-      );
-    }
- 
 
-    if (!title || !description || !category || !imageFile || !pdfFile) {
-      return NextResponse.json(
-        { message: "Missing required fields" },
-        { status: 400 },
-      );
-    }
-
-    if (!(imageFile instanceof File) || !imageFile.type.startsWith("image/")) {
+if (!(imageFile instanceof File) || !imageFile.type.startsWith("image/")) {
   return NextResponse.json(
     { message: "Please upload a valid image" },
-    { status: 400 }
+    { status: 400 },
   );
 }
 
-    const review = await reviewNotePdf({
-      title,
-      description,
-      pdfFile,
-    });
+const review = await reviewNotePdf({
+  title,
+  description,
+  pdfFile,
+});
 
-   const pdfResult = await uploadPdf(pdfFile);
-    const imageResult = await uploadImage(imageFile as File);
-       
-    const note = await Note.create({
-      title,
-      slug: `${slugify(title)}-${Date.now()}`,
-      author: currentUser.userId,
-      description,
-      category,
-      image: imageResult.secure_url,
-      fileUrl: pdfResult.secure_url,
-      fileName: pdfFile.name,
-      fileType: pdfFile.type,
-      extractedText: review.extractedText,
-      status: review.status,
-      reviewReason: review.reviewReason,
-      reviewIssues: review.reviewIssues,
-      reviewedAt: review.reviewedAt,
-      submittedAt: new Date(),
-      cloudinaryId: pdfResult.public_id,
-      imageCloudinaryId: imageResult.public_id,
-    });
+const pdfResult = await uploadPdf(pdfFile);
+const imageResult = await uploadImage(imageFile);
+
+const note = await Note.create({
+  title,
+  slug: `${slugify(title)}-${Date.now()}`,
+  author: currentUser.userId,
+  description,
+  category,
+  image: imageResult.secure_url,
+  fileUrl: pdfResult.secure_url,
+  fileName: pdfFile.name,
+  fileType: pdfFile.type,
+  extractedText: review.extractedText,
+  status: review.status,
+  reviewReason: review.reviewReason,
+  reviewIssues: review.reviewIssues,
+  reviewedAt: review.reviewedAt,
+  submittedAt: new Date(),
+  cloudinaryId: pdfResult.public_id,
+  imageCloudinaryId: imageResult.public_id,
+});
 
     await User.findByIdAndUpdate(currentUser.userId, {
       $addToSet: { posts: note._id },
