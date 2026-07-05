@@ -3,8 +3,7 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { reviewDocumentText } from "@/lib/ai/reviewDocument";
-import { extractTextWithDocling } from "@/lib/pdf/extractTextWithDocling";
-
+import { extractPdfText } from "@/lib/pdf/extractPdfText";
 export async function POST(req: Request) {
   try {
     const { noteId, pdf_url, title = "Uploaded note", description } = await req.json();
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
     const pdfFile = new File([await pdfRes.arrayBuffer()], "review.pdf", {
       type: "application/pdf",
     });
-    const extractedText = await extractTextWithDocling(pdfFile);
+    const extractedText = await extractPdfText(pdfFile);
     const review = await reviewDocumentText({ title, description, extractedText });
 
     return NextResponse.json({

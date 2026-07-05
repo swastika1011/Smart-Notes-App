@@ -16,8 +16,7 @@ RUN npm install
 
 # Install Python dependencies
 COPY requirements.txt ./
-RUN pip3 install --break-system-packages --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
-
+RUN pip3 install --break-system-packages --no-cache-dir -r requirements.txt
 # Copy source
 COPY . .
 

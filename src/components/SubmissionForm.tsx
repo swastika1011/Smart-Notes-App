@@ -289,14 +289,30 @@ const SubmissionForm = () => {
               accept=".pdf"
               required
               className="startup-form_input !mt-0 file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:text-blue-700"
-              onChange={(event) => {
-                setPdfFile(event.target.files?.[0] || null);
-                setErrors((prev) => {
-                  const next = { ...prev };
-                  delete next.pdfFile;
-                  return next;
-                });
-              }}
+onChange={(event) => {
+  const file = event.target.files?.[0] || null;
+
+  if (file && file.size > 10 * 1024 * 1024) {
+    // Clear the selected file
+    event.target.value = "";
+    setPdfFile(null);
+
+    setErrors((prev) => ({
+      ...prev,
+      pdfFile: "PDF size must be 10 MB or smaller.",
+    }));
+
+    return;
+  }
+
+  setPdfFile(file);
+
+  setErrors((prev) => {
+    const next = { ...prev };
+    delete next.pdfFile;
+    return next;
+  });
+}}
             />
           </div>
           {errors.pdfFile && (

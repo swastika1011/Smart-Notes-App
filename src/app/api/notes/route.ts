@@ -44,6 +44,16 @@ const universityName = formData.get("universityName") as string;
 const pdfFile = formData.get("pdfFile") as File | null;
 
     if (!(pdfFile instanceof File) || pdfFile.type !== "application/pdf") {
+      const MAX_PDF_SIZE = 10 * 1024 * 1024;
+
+if (pdfFile.size > MAX_PDF_SIZE) {
+  return NextResponse.json(
+    {
+      message: "PDF size must be 10 MB or smaller.",
+    },
+    { status: 400 }
+  );
+}
       return NextResponse.json(
         { message: "Please upload a valid PDF file" },
         { status: 400 },

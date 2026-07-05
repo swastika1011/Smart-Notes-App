@@ -91,6 +91,16 @@ export async function PATCH(request, { params }) {
     }
 
     if (pdfFile instanceof File && pdfFile.size > 0) {
+      const MAX_PDF_SIZE = 10 * 1024 * 1024;
+
+if (pdfFile.size > MAX_PDF_SIZE) {
+  return NextResponse.json(
+    {
+      message: "PDF size must be 10 MB or smaller.",
+    },
+    { status: 400 }
+  );
+}
       if (pdfFile.type !== "application/pdf") {
         return NextResponse.json(
           { message: "Please upload a valid PDF file" },

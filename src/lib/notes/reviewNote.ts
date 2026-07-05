@@ -1,6 +1,5 @@
 import { reviewDocumentText } from "@/lib/ai/reviewDocument";
-import { extractTextWithDocling } from "@/lib/pdf/extractTextWithDocling";
-
+import { extractPdfText } from "@/lib/pdf/extractPdfText";
 type ReviewableStatus = "approved" | "rejected" | "processing_failed";
 
 export type NoteReviewResult = {
@@ -31,7 +30,7 @@ export async function reviewNotePdf(params: {
   const reviewedAt = new Date();
 
   try {
-    const extractedText = await extractTextWithDocling(params.pdfFile);
+    const extractedText = await extractPdfText(params.pdfFile);
     const review = await reviewDocumentText({
       title: params.title,
       description: params.description,
